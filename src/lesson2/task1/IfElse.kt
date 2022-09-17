@@ -201,13 +201,18 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    return when {
-        c < a && a < d && d < b -> d - a
-        a < c && c < d && d < b -> d - c
-        a < c && c < b && b < d -> b - c
-        c < a && a < b && b < d -> b - a
-        a == c -> b - a
-        a == d || b == c || a == b || c == d -> 0
-        else -> -1
+    if (a == c) {
+        if (b == d || d > b) return b - a
+        if (b > d) return d - c
     }
+    if (d == b) {
+        if (c > a) return c - d
+        if (a > c) return b - a
+    }
+    if (b == c || d == a) return 0
+    if (a < c && c < b && b < d) return b - c
+    if (c < a && a < d && d < b) return d - a
+    if (a < c && b > d) return d - c
+    if (c < a && d > b) return b - a
+    else return -1
 }
