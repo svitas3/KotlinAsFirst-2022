@@ -67,6 +67,7 @@ fun main() {
  */
 fun seconds(hours: Int, minutes: Int, seconds: Int): Int = hours * sqr(60) + minutes * 60 + seconds
 
+
 /**
  * Тривиальная (1 балл)
  *
