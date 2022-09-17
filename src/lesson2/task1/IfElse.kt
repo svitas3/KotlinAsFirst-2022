@@ -207,7 +207,7 @@ fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
         a < c && c < b && b < d -> b - c
         c < a && a < b && b < d -> b - a
         a == c -> b - a
-        a == d || b == c -> 0
+        a == d || b == c || a == b || c == d -> 0
         else -> -1
     }
 }
