@@ -300,7 +300,7 @@ fun squareSequenceDigit(n: Int): Int {
     var count: Int
     var square: Int
     for (i in 1..n) {
-        square = fib(i)
+        square = i * i
         count = digitNumber(square)
         if (count == 1) box.add(square)
         else {

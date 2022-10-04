@@ -73,16 +73,10 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
 fun ageDescription(age: Int): String {
     val line = age.toString()
     val digit = line.last().digitToInt()
-    if (age in 11..19 || age in 111..119) {
-        return "$age лет"
-    }
-    else {
-        return when (digit) {
-            1 -> "$age год"
-            in 2..4 -> "$age года"
-            else -> "$age лет"
+    if (age % 100 in 11..19) return "$age лет" else {
+        if (digit == 1) return "$age год" else {
+            if (digit in 2..4) return "$age года" else return "$age лет"
         }
-
     }
 }
 
@@ -107,20 +101,11 @@ fun timeForHalfWay(
         halft += t1
         if (s2 < (halfs - s1)) {
             halft += t2
-            if (s3 < (halfs - s1 - s2)) {
-                halft += t3
-            }
-            else {
-                halft += (halfs - s2 - s1) / v3
-            }
+            if (s3 < (halfs - s1 - s2)) halft += t3 else halft += (halfs - s2 - s1) / v3
         }
-        else {
-            halft += (halfs - s1) / v2
-        }
+        else halft += (halfs - s1) / v2
     }
-    else {
-        halft += halfs / v1
-    }
+    else halft += halfs / v1
     return halft
 }
 
@@ -183,11 +168,11 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     val sum = a + b + c
     val maxi = maxOf(a, b, c)
     val mini = minOf(a, b, c)
-    val difference = sum - maxi - mini
+    val middle = sum - maxi - mini
     if (a + b < c || a + c < b || b + c < a) return -1
     return when {
-        maxi.pow(2.0) < difference.pow(2.0) + mini.pow(2.0) -> 0
-        maxi.pow(2.0) == difference.pow(2.0) + mini.pow(2.0) -> 1
+        maxi.pow(2.0) < middle.pow(2.0) + mini.pow(2.0) -> 0
+        maxi.pow(2.0) == middle.pow(2.0) + mini.pow(2.0) -> 1
         else -> 2
     }
 }
@@ -201,18 +186,11 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    if (a == c) {
-        if (b == d || d > b) return abs(b - a)
-        if (b > d) return abs(d - c)
-    }
-    if (d == b) {
-        if (c > a) return abs(c - d)
-        if (a > c) return abs(b - a)
-    }
+    if (a >= c && d >= b) return abs(b - a)
+    if (b > d && a <= c) return abs(d - c)
+    if (d == b && c > a) return abs(c - d)
     if (b == c || d == a) return 0
     if (a < c && c < b && b < d) return abs(b - c)
     if (c < a && a < d && d < b) return abs(d - a)
-    if (a < c && b > d) return abs(d - c)
-    if (c < a && d > b) return abs(b - a)
     else return -1
 }
