@@ -6,6 +6,8 @@ import kotlin.math.sqrt
 import kotlin.math.pow
 import kotlin.math.PI
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 // Урок 3: циклы
 // Максимальное количество баллов = 9
@@ -77,7 +79,7 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  */
 fun digitNumber(n: Int): Int {
     var count = 0
-    var number = n
+    var number = abs(n)
     if (n == 0) return 1
     while (number > 0) {
         number /= 10
@@ -168,7 +170,7 @@ fun collatzSteps(x: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    for (i in 1..(m * n)) {
+    for (i in max(m, n)..(m * n)) {
         if (i % m == 0 && i % n == 0) return i
     }
     return m * n
@@ -182,7 +184,7 @@ fun lcm(m: Int, n: Int): Int {
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
-    for (i in 2..m * n) {
+    for (i in 2..min(m, n)) {
         if (m % i == 0 && n % i == 0) return false
     }
     return true

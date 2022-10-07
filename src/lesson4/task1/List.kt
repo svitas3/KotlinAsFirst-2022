@@ -236,6 +236,10 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*
 fun convert(n: Int, base: Int): List<Int> {
     var numbers = mutableListOf<Int>()
     var digit = n
+    if (digit == 0) {
+        numbers.add(0)
+        return numbers
+    }
     while (digit > 0) {
         numbers.add(digit % base)
         digit /= base
@@ -261,6 +265,7 @@ fun convertToString(n: Int, base: Int): String {
         28 to "s", 29 to "t", 30 to "u", 31 to "v", 32 to "w", 33 to "x", 34 to "y", 35 to "z")
     var number = n
     var res = ""
+    if (n == 0) return "0"
     while (number > 0) {
         if (number % base < 10) res = (number % base).toString() + res
         else res = alphabet[number % base] + res
@@ -427,7 +432,15 @@ fun russian(n: Int): String {
                 if (n % 10000 / 1000 == 2) res += "две тысячи"
                 if (n % 10000 / 1000 in 3..4) res += unit[n % 10000 / 1000 - 1] + " тысячи"
                 if (n % 10000 / 1000 in 5..9) res += unit[n % 10000 / 1000 - 1] + " тысяч"
-            } else res += "тысяч"
+                if (n % 10000 / 1000 == 0) res += "тысяч"
+            }
+            if (n % 100000 / 10000 == 0) {
+                if (n % 10000 / 1000 == 1) res += "одна тысяча"
+                if (n % 10000 / 1000 == 2) res += "две тысячи"
+                if (n % 10000 / 1000 in 3..4) res += unit[n % 10000 / 1000 - 1] + " тысячи"
+                if (n % 10000 / 1000 in 5..9) res += unit[n % 10000 / 1000 - 1] + " тысяч"
+                if (n % 10000 / 1000 == 0) res += "тысяч"
+            }
         }
         if (n % 1000 / 100 != 0) res += " " + hundred[n % 1000 / 100 - 1]
         if (n % 100 / 10 == 1) res += " " + decadeFirst[n % 10] else {
