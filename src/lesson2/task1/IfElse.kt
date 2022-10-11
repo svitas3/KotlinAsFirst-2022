@@ -71,15 +71,12 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String {
-    val line = age.toString()
-    val digit = line.last().digitToInt()
-    if (age % 100 in 11..19) return "$age лет" else {
-        if (digit == 1) return "$age год" else {
-            if (digit in 2..4) return "$age года" else return "$age лет"
-        }
+    if (age % 100 in 11..19) return "$age лет" else return when (age % 10) {
+        1 -> "$age год"
+        in 2..4 -> "$age года"
+        else -> "$age лет"
     }
 }
-
 /**
  * Простая (2 балла)
  *
@@ -92,21 +89,16 @@ fun timeForHalfWay(
     t2: Double, v2: Double,
     t3: Double, v3: Double
 ): Double {
-    val halfs = (t1 * v1 + t2 * v2 + t3 * v3) / 2
+    var halfs = (t1 * v1 + t2 * v2 + t3 * v3) / 2
     val s1 = t1 * v1
     val s2 = t2 * v2
     val s3 = t3 * v3
     var halft = 0.0
-    if (s1 < halfs) {
-        halft += t1
-        if (s2 < (halfs - s1)) {
-            halft += t2
-            if (s3 < (halfs - s1 - s2)) halft += t3 else halft += (halfs - s2 - s1) / v3
-        }
-        else halft += (halfs - s1) / v2
-    }
-    else halft += halfs / v1
-    return halft
+    if (halfs - s1 <= 0) return halfs / v1
+    halfs -= s1
+    if (halfs - s2 <= 0) return halfs / v2 + t1
+    halfs -= s2
+    return halfs / v3 + t2 + t1
 }
 
 /**
@@ -186,11 +178,11 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    if (a >= c && d >= b) return abs(b - a)
-    if (b > d && a <= c) return abs(d - c)
-    if (d == b && c > a) return abs(c - d)
-    if (b == c || d == a) return 0
-    if (a < c && c < b && b < d) return abs(b - c)
-    if (c < a && a < d && d < b) return abs(d - a)
-    else return -1
+    return when {
+        (a >= c && d >= b) -> abs(b - a)
+        (b > d && a <= c) -> abs(d - c)
+        (c <= b && b <= d) -> abs(b - c)
+        (a <= d && d <= b) -> abs(d - a)
+        else -> -1
+    }
 }

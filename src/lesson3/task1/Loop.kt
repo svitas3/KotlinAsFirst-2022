@@ -125,10 +125,11 @@ fun minDivisor(n: Int): Int {
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
 fun maxDivisor(n: Int): Int {
-    for (i in (n / 2) downTo 1) {
-        if (n % i == 0) return i
+    var max = 0
+    for (i in 1..(n / 2)) {
+        if (n % i == 0) max = i
     }
-    return n
+    return max
 }
 
 /**
@@ -170,10 +171,11 @@ fun collatzSteps(x: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    for (i in max(m, n)..(m * n)) {
-        if (i % m == 0 && i % n == 0) return i
-    }
-    return m * n
+    var m1 = m
+    var n1 = n
+    while (m1 != 0 && n1 != 0)
+    if (m1 > n1) m1 %= n1 else n1 %= m1
+    return m * n / max(m1, n1)
 }
 
 /**
@@ -183,12 +185,7 @@ fun lcm(m: Int, n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-    for (i in 2..min(m, n)) {
-        if (m % i == 0 && n % i == 0) return false
-    }
-    return true
-}
+fun isCoPrime(m: Int, n: Int): Boolean = (lcm(m, n) == (m * n))
 
 /**
  * Средняя (3 балла)
@@ -219,9 +216,7 @@ fun revert(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean {
-    if (n == revert(n)) return true else return false
-}
+fun isPalindrome(n: Int): Boolean = (n == revert(n))
 
 /**
  * Средняя (3 балла)
@@ -298,22 +293,24 @@ fun cos(x: Double, eps: Double): Double {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun squareSequenceDigit(n: Int): Int {
-    var box = mutableListOf<Int>()
+    var box = 0
     var count: Int
     var square: Int
-    for (i in 1..n) {
+    var quantity = 0
+    var i = 0
+    while (quantity != n){
+        i++
         square = i * i
         count = digitNumber(square)
-        if (count == 1) box.add(square)
-        else {
-            while (count > 0) {
-                box.add(square / 10.toDouble().pow(count - 1).toInt())
-                square %= 10.toDouble().pow(count - 1).toInt()
-                count--
-            }
+        while (count > 0) {
+            box = square / 10.toDouble().pow(count - 1).toInt()
+            quantity++
+            square %= 10.toDouble().pow(count - 1).toInt()
+            count--
+            if (quantity == n) break
         }
     }
-    return box[n - 1]
+    return box
 }
 
 /**
@@ -326,20 +323,22 @@ fun squareSequenceDigit(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun fibSequenceDigit(n: Int): Int {
-    var box = mutableListOf<Int>()
+    var box = 0
     var count: Int
     var square: Int
-    for (i in 1..n) {
+    var quantity = 0
+    var i = 0
+    while (quantity != n) {
+        i++
         square = fib(i)
         count = digitNumber(square)
-        if (count == 1) box.add(square)
-        else {
-            while (count > 0) {
-                box.add(square / 10.toDouble().pow(count - 1).toInt())
-                square %= 10.toDouble().pow(count - 1).toInt()
-                count--
-            }
+        while (count > 0) {
+            box = square / 10.toDouble().pow(count - 1).toInt()
+            quantity++
+            square %= 10.toDouble().pow(count - 1).toInt()
+            count--
+            if (quantity == n) break
         }
     }
-    return box[n - 1]
+    return box
 }
