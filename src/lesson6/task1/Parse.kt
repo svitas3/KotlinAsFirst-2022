@@ -1,6 +1,7 @@
 @file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence")
 
 package lesson6.task1
+import lesson2.task2.daysInMonth
 
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
@@ -75,7 +76,6 @@ fun main() {
  * входными данными.
  */
 fun dateStrToDigit(str: String): String = TODO()
-
 /**
  * Средняя (4 балла)
  *
