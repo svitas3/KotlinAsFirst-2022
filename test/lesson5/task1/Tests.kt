@@ -210,7 +210,6 @@ class Tests {
             averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0, "NFLX" to 50.0))
         )
     }
-
     @Test
     @Tag("4")
     fun findCheapestStuff() {
