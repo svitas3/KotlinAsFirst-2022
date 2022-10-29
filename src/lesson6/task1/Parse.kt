@@ -79,10 +79,8 @@ var months = listOf<String>("января", "февраля", "марта", "а�
     "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
 fun dateStrToDigit(str: String): String {
     val str = str.split(" ")
-    val truth: Int
-    if (str.size == 3) truth = daysInMonth(months.indexOf(str[1]) + 1.toInt(), str[2].toInt())
-    if (str.size == 3 && str[1] in months && truth != 0 && str[0].toInt() in 1..31) return String.format("%02d.%02d.%02d",
-        str[0].toInt(), months.indexOf(str[1]) + 1.toInt(), str[2].toInt())
+    if (str.size == 3 && daysInMonth(months.indexOf(str[1]) + 1.toInt(), str[2].toInt()) >= str[0].toInt())
+        return String.format("%02d.%02d.%02d", str[0].toInt(), months.indexOf(str[1]) + 1.toInt(), str[2].toInt())
     else return ""
 }
 /**
