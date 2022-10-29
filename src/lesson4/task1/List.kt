@@ -259,19 +259,17 @@ fun convert(n: Int, base: Int): List<Int> {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
+private val alphabet = mapOf(10 to "a", 11 to "b", 12 to "c", 13 to "d", 14 to "e", 15 to "f", 16 to "g", 17 to "h",
+    18 to "i", 19 to "j", 20 to "k", 21 to "l", 22 to "m", 23 to "n", 24 to "o", 25 to "p", 26 to "q", 27 to "r",
+    28 to "s", 29 to "t", 30 to "u", 31 to "v", 32 to "w", 33 to "x", 34 to "y", 35 to "z")
 fun convertToString(n: Int, base: Int): String {
-    var alphabet = mapOf(10 to "a", 11 to "b", 12 to "c", 13 to "d", 14 to "e", 15 to "f", 16 to "g", 17 to "h",
-        18 to "i", 19 to "j", 20 to "k", 21 to "l", 22 to "m", 23 to "n", 24 to "o", 25 to "p", 26 to "q", 27 to "r",
-        28 to "s", 29 to "t", 30 to "u", 31 to "v", 32 to "w", 33 to "x", 34 to "y", 35 to "z")
-    var number = n
-    var res = ""
-    if (n == 0) return "0"
-    while (number > 0) {
-        if (number % base < 10) res = (number % base).toString() + res
-        else res = alphabet[number % base] + res
-        number /= base
+    val number = convert(n, base).toMutableList()
+    var res = StringBuilder()
+    for (i in 0..number.size - 1) {
+        if (number[i] in alphabet) res.append(alphabet[number[i]])
+        else res.append(number[i])
     }
-    return res
+    return res.toString()
 }
 
 /**
@@ -303,18 +301,21 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
+private val alphabet1 = mapOf("a" to 10, "b" to 11, "c" to 12, "d" to 13, "e" to 14, "f" to 15, "g" to 16, "h" to 17,
+    "i" to 18, "j" to 19, "k" to 20, "l" to 21, "m" to 22, "n" to 23, "o" to 24, "p" to 25, "q" to 26, "r" to 27,
+    "s" to 28, "t" to 29, "u" to 30, "v" to 31, "w" to 32, "x" to 33, "y" to 34, "z" to 35)
 fun decimalFromString(str: String, base: Int): Int {
-    var alphabet = "abcdefghijklmnopqrstuvwxyz"
-    var res = 0
-    var size = str.length
-    for (i in 0..str.length - 1) {
-        if (str[i] in alphabet) res += (alphabet.indexOf(str[i]) + 10) * (base.toDouble().pow(size - 1)).toInt()
-        else res += str[i].digitToInt() * (base.toDouble().pow(size - 1)).toInt()
-        size--
+    var str1 = mutableListOf<String>()
+    for (i in str) {
+        str1.add(i.toString())
     }
-    return res
+    for (i in 0..str1.size - 1) {
+        if (alphabet1.containsKey(str1[i])) str1[i] = alphabet1[str1[i]].toString()
+    }
+    val res = str1.map { it.toInt() }
+    val number = decimal(res, base)
+    return number
 }
-
 /**
  * Сложная (5 баллов)
  *
@@ -323,49 +324,44 @@ fun decimalFromString(str: String, base: Int): Int {
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
+private val digits = mapOf<Int, String>(1 to "I", 4 to "IV", 5 to "V", 9 to "IX", 10 to "X", 40 to "XL", 50 to "L",
+    90 to "XC", 100 to "C", 400 to "CD", 500 to "D", 900 to "CM", 1000 to "M")
+fun counter (n: Int, count: Int): String {
+    var res = StringBuilder()
+    val length = count
+    if (n in digits) res = StringBuilder(digits[n * 10.toDouble().pow(length - 1).toInt()].toString())
+    if (n in 2..3) res = StringBuilder(digits[1 * 10.toDouble().pow(length - 1).toInt()].toString().repeat(n))
+    if (n in 6..8) res = StringBuilder(digits[5 * 10.toDouble().pow(length - 1).toInt()] +
+            digits[1 * 10.toDouble().pow(length - 1).toInt()].toString().repeat(n - 5))
+    return res.toString()
+}
 fun roman(n: Int): String {
-    var digits = mapOf<Int, String>(1 to "I", 4 to "IV", 5 to "V", 9 to "IX", 10 to "X", 40 to "XL", 50 to "L",
-         90 to "XC", 100 to "C", 400 to "CD", 500 to "D", 900 to "CM", 1000 to "M")
-    var res = ""
-    val count = digitNumber(n)
+    var res = StringBuilder()
+    var count = digitNumber(n)
     if (n in digits) return digits[n].toString()
-    if (count == 1) {
-        if (n in 2..3) res = digits[1].toString().repeat(n)
-        if (n in 6..8) res = digits[5] + digits[1].toString().repeat(n - 5)
-    }
+    if (count == 1) return counter(n, count)
     if (count == 2) {
-        if (n / 10 in digits) res = digits[n / 10 * 10].toString()
-        if (n / 10 in 2..3) res = digits[10].toString().repeat(n / 10)
-        if (n / 10 in 6..8) res = digits[50] + digits[10].toString().repeat(n / 10 - 5)
-        if (n % 10 in digits) res += digits[n % 10].toString()
-        if (n % 10 in 2..3) res += digits[1].toString().repeat(n % 10)
-        if (n % 10 in 6..8) res += digits[5] + digits[1].toString().repeat(n % 10 - 5)
+        res = StringBuilder(counter(n / 10, count))
+        count--
+        res.append(counter(n % 10, count))
     }
     if (count == 3) {
-        if (n / 100 in digits) res = digits[n / 100 * 100].toString()
-        if (n / 100 in 2..3) res = digits[100].toString().repeat(n / 100)
-        if (n / 100 in 6..8) res = digits[500] + digits[100].toString().repeat(n / 100 - 5)
-        if (n % 100 / 10 in digits) res += digits[n % 100 / 10 * 10].toString()
-        if (n % 100 / 10 in 2..3) res += digits[10].toString().repeat(n % 100 / 10)
-        if (n % 100 / 10 in 6..8) res += digits[50] + digits[10].toString().repeat(n % 100 / 10 - 5)
-        if (n % 10 in digits) res += digits[n % 10].toString()
-        if (n % 10 in 2..3) res += digits[1].toString().repeat(n % 10)
-        if (n % 10 in 6..8) res += digits[5] + digits[1].toString().repeat(n % 10 - 5)
+        res = StringBuilder(counter(n / 100, count))
+        count--
+        res.append(counter(n % 100 / 10, count))
+        count--
+        res.append(counter(n % 10, count))
     }
     if (count == 4) {
-        if (n / 1000 in digits) res = digits[n / 1000 * 1000].toString()
-        if (n / 1000 in 2..3) res = digits[1000].toString().repeat(n / 1000)
-        if (n % 1000 / 100 in digits) res += digits[n % 1000 / 100 * 100].toString()
-        if (n % 1000 / 100 in 2..3) res += digits[100].toString().repeat(n % 1000 / 100)
-        if (n % 1000 / 100 in 6..8) res += digits[500] + digits[100].toString().repeat(n % 1000 / 100 - 5)
-        if (n % 100 / 10 in digits) res += digits[n % 100 / 10 * 10].toString()
-        if (n % 100 / 10 in 2..3) res += digits[10].toString().repeat(n % 100 / 10)
-        if (n % 100 / 10 in 6..8) res += digits[50] + digits[10].toString().repeat(n % 100 / 10  - 5)
-        if (n % 10 in digits) res += digits[n % 10].toString()
-        if (n % 10 in 2..3) res += digits[1].toString().repeat(n % 10)
-        if (n % 10 in 6..8) res += digits[5] + digits[1].toString().repeat(n % 10 - 5)
+        res = StringBuilder(counter(n / 1000, count))
+        count--
+        res.append(counter(n % 1000 / 100, count))
+        count--
+        res.append(counter(n % 100 / 10, count))
+        count--
+        res.append(counter(n % 10, count))
     }
-    return res
+    return res.toString()
 }
 
 /**
@@ -375,13 +371,32 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
+val unit = listOf("один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+val decadeFirst = listOf("десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать",
+    "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать")
+val decadeSecond = listOf("двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто")
+val hundred = listOf("сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот")
+fun counter1(n: Int, count: Int): String {
+    var res = StringBuilder()
+    if (count > 3) res = StringBuilder(" ")
+    if (n / 100 != 0) res.append(hundred[n / 100 - 1] + " ")
+    if (n % 100 / 10 == 1) res.append(decadeFirst[n % 10]) else {
+        if (n % 100 / 10 != 0) res.append(decadeSecond[n % 100 / 10 - 2] + " ")
+        if (n % 10 != 0) res.append(unit[n % 10 - 1])
+    }
+    return res.toString()
+}
+fun counter2(n: Int): String {
+    var res = StringBuilder()
+    if (n == 1) res.append("одна тысяча")
+    if (n == 2) res.append("две тысячи")
+    if (n in 3..4) res.append(unit[n - 1] + " тысячи")
+    if (n in 5..9) res.append(unit[n - 1] + " тысяч")
+    if (n == 0) res.append("тысяч")
+    return res.toString()
+}
 fun russian(n: Int): String {
-    val unit = listOf("один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
-    val decadeFirst = listOf("десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать",
-        "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать")
-    val decadeSecond = listOf("двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто")
-    val hundred = listOf("сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот")
-    var res = ""
+    var res = StringBuilder()
     val count = digitNumber(n)
     if (count == 1) return unit[n - 1]
     if (count == 2) {
@@ -389,64 +404,30 @@ fun russian(n: Int): String {
             if (n % 10 != 0) return decadeSecond[n / 10 - 2] + " " + unit[n % 10 - 1] else return decadeSecond[n / 10 - 2]
         }
     }
-    if (count == 3) {
-        res = hundred[n / 100 - 1] + " "
-        if (n % 100 / 10 == 1) res += decadeFirst[n % 10] else {
-            if (n % 100 / 10 != 0) res += decadeSecond[n % 100 / 10 - 2] + " "
-            if (n % 10 != 0) res += unit[n % 10 - 1]
-        }
-    }
+    if (count == 3) return counter1(n, count)
     if (count == 4) {
-        if (n / 1000 == 1) res = "тысяча "
-        if (n / 1000 == 2) res = "две тысячи "
-        if (n / 1000 in 3..4) res = unit[n / 1000 - 1] + " тысячи "
-        if (n / 1000 in 5..9) res = unit[n / 1000 - 1] + " тысяч "
-        if (n % 1000 / 100 != 0) res += hundred[n % 1000 / 100 - 1] + " "
-        if (n % 100 / 10 == 1) res += decadeFirst[n % 10] else {
-                if (n % 100 / 10 != 0) res += decadeSecond[n % 100 / 10 - 2] + " "
-                if (n % 10 != 0) res += unit[n % 10 - 1]
-            }
+        res = StringBuilder(counter2(n / 1000))
+        res.append(counter1(n % 1000, count))
     }
     if (count == 5) {
-        if (n / 10000 == 1) res = decadeFirst[n % 10000 / 1000] + " тысяч" else {
+        if (n / 10000 == 1) res = StringBuilder(decadeFirst[n % 10000 / 1000] + " тысяч") else {
             if (n % 10000 / 1000 != 0) {
-                res = decadeSecond[n / 10000 - 2] + " "
-                if (n % 10000 / 1000 == 1) res += "одна тысяча"
-                if (n % 10000 / 1000 == 2) res += "две тысячи"
-                if (n % 10000 / 1000 in 3..4) res += unit[n % 10000 / 1000 - 1] + " тысячи"
-                if (n % 10000 / 1000 in 5..9) res += unit[n % 10000 / 1000 - 1] + " тысяч"
-            } else res = decadeSecond[n / 10000 - 2] + " тысяч"
+                res = StringBuilder(decadeSecond[n / 10000 - 2] + " ")
+                res.append(counter2(n % 10000 / 1000))
+            } else res = StringBuilder(decadeSecond[n / 10000 - 2] + " тысяч")
         }
-        if (n % 1000 / 100 != 0) res += " " + hundred[n % 1000 / 100 - 1]
-        if (n % 100 / 10 == 1) res += " " + decadeFirst[n % 10] else {
-            if (n % 100 / 10 != 0) res += " " + decadeSecond[n % 100 / 10 - 2]
-            if (n % 10 != 0) res += " " + unit[n % 10 - 1]
-        }
+        res.append(counter1(n % 1000, count))
     }
     if (count == 6) {
-        res = hundred[n / 100000 - 1] + " "
-        if (n % 100000 / 10000 == 1) res += decadeFirst[n % 10000 / 1000] + " тысяч" else {
+        res = StringBuilder(hundred[n / 100000 - 1] + " ")
+        if (n % 100000 / 10000 == 1) res.append(decadeFirst[n % 10000 / 1000] + " тысяч") else {
             if (n % 100000 / 10000 != 0) {
-                res += decadeSecond[n % 100000 / 10000 - 2] + " "
-                if (n % 10000 / 1000 == 1) res += "одна тысяча"
-                if (n % 10000 / 1000 == 2) res += "две тысячи"
-                if (n % 10000 / 1000 in 3..4) res += unit[n % 10000 / 1000 - 1] + " тысячи"
-                if (n % 10000 / 1000 in 5..9) res += unit[n % 10000 / 1000 - 1] + " тысяч"
-                if (n % 10000 / 1000 == 0) res += "тысяч"
+                res.append(decadeSecond[n % 100000 / 10000 - 2] + " ")
+                res.append(counter2(n % 10000 / 1000))
             }
-            if (n % 100000 / 10000 == 0) {
-                if (n % 10000 / 1000 == 1) res += "одна тысяча"
-                if (n % 10000 / 1000 == 2) res += "две тысячи"
-                if (n % 10000 / 1000 in 3..4) res += unit[n % 10000 / 1000 - 1] + " тысячи"
-                if (n % 10000 / 1000 in 5..9) res += unit[n % 10000 / 1000 - 1] + " тысяч"
-                if (n % 10000 / 1000 == 0) res += "тысяч"
-            }
+            if (n % 100000 / 10000 == 0) res.append(counter2(n % 10000 / 1000))
         }
-        if (n % 1000 / 100 != 0) res += " " + hundred[n % 1000 / 100 - 1]
-        if (n % 100 / 10 == 1) res += " " + decadeFirst[n % 10] else {
-            if (n % 100 / 10 != 0) res += " " + decadeSecond[n % 100 / 10 - 2]
-            if (n % 10 != 0) res += " " + unit[n % 10 - 1]
-        }
+        res.append(counter1(n % 1000, count))
     }
-    return res
+    return res.toString().trim()
 }

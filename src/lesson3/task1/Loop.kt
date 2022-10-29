@@ -175,7 +175,7 @@ fun lcm(m: Int, n: Int): Int {
     var n1 = n
     while (m1 != 0 && n1 != 0)
     if (m1 > n1) m1 %= n1 else n1 %= m1
-    return m * n / max(m1, n1)
+    return m / max(m1, n1) * n
 }
 
 /**

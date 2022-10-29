@@ -214,11 +214,11 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
     var count = ""
-    var product = 1000000.0
+    var product = Int.MAX_VALUE
     for ((name, pair) in stuff) {
         if (pair.second < product && pair.first == kind) {
             count = name
-            product = pair.second
+            product = pair.second.toInt()
         }
     }
     if (count != "") return count else return null
@@ -234,6 +234,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
     var count = 0
+    val word = word.toLowerCase()
     for (i in 0..word.length - 1) if (word[i] in chars) count++
     return count == word.length
 }
@@ -249,7 +250,7 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
  * Например:
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
-fun extractRepeats(list: List<String>): Map<String, Int> = (list.groupingBy { it.first().toString() }.eachCount()).filter{it.value > 1}
+fun extractRepeats(list: List<String>): Map<String, Int> = (list!!.groupingBy { it.first().toString() }.eachCount()).filter{it.value > 1}
 /**
  * Средняя (3 балла)
  *
@@ -319,6 +320,13 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
             else acquaintances[names] = setOf()
         }
     }
+    for ((name, handshakes) in acquaintances) {
+        for (names in handshakes) {
+            for (i in acquaintances[names]!!) {
+                if (name != i) acquaintances[name] = acquaintances[name]!!.plus(i)
+            }
+        }
+    }
     return acquaintances
 }
 /**
@@ -342,12 +350,11 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     list.sorted()
     for (i in 0.. list.size - 1) {
         for (j in i..list.size - 1) {
-            if (list[i] + list[j] == number && list[i] != list[j]) return Pair(i, j)
+            if (list[i] + list[j] == number && i != j) return Pair(i, j)
         }
     }
     return Pair(-1, -1)
 }
-
 /**
  * Очень сложная (8 баллов)
  *
@@ -380,9 +387,10 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             bag = bag.plus(i.toPair())
         }
     }
+    count = bag.size
     for (i in bag) {
         for (j in treasures) {
-            if (i == j.value) bag1 = bag1.plus(j.key)
+            if (i == j.value && bag1.size + 1 <= count) bag1 = bag1.plus(j.key)
         }
     }
     return bag1
