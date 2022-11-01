@@ -221,7 +221,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
             product = pair.second.toInt()
         }
     }
-    if (count != "") return count else return null
+    return count
 }
 /**
  * Средняя (3 балла)
@@ -235,6 +235,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
     var count = 0
     val word = word.toLowerCase()
+    val chars = chars.map { it.lowercaseChar() }
     for (i in 0..word.length - 1) if (word[i] in chars) count++
     return count == word.length
 }
@@ -250,7 +251,14 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
  * Например:
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
-fun extractRepeats(list: List<String>): Map<String, Int> = (list!!.groupingBy { it.first().toString() }.eachCount()).filter{it.value > 1}
+fun extractRepeats(list: List<String>): Map<String, Int> {
+    try {
+        return (list.groupingBy { it.first().toString() }.eachCount()).filter { it.value > 1 }
+    }
+    catch (e: NoSuchElementException) {
+        return emptyMap()
+    }
+}
 /**
  * Средняя (3 балла)
  *
@@ -379,12 +387,13 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     var bag = listOf<Pair<Int, Int>>()
     var bag1 = setOf<String>()
-    val weightPrice = treasures.values.toList().sortedByDescending {  (k, v) -> v }.toMap()
+    val weightPrice = treasures.values.toList().sortedByDescending { (k, v) -> v }
+    val p = treasures.values
     var count = capacity
     for (i in weightPrice) {
-        if (i.key <= count) {
-            count -= i.key
-            bag = bag.plus(i.toPair())
+        if (i.first <= count) {
+            count -= i.first
+            bag = bag.plus(i)
         }
     }
     count = bag.size
