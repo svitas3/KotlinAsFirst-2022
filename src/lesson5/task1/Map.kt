@@ -359,9 +359,6 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     }
     return Pair(-1, -1)
 }
-fun main () {
-    println(findSumOfTwo(listOf(1, 2, 3), 4))
-}
 /**
  * Очень сложная (8 баллов)
  *
@@ -415,8 +412,3 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     }
     return bag2
 }
-//fun main () {
-//    println(bagPacking(mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),
-//        850
-//    ))
-//}
