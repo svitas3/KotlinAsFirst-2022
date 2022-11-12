@@ -48,20 +48,20 @@ fun timeSecondsToStr(seconds: Int): String {
 /**
  * Пример: консольный ввод
  */
-fun main() {
-    println("Введите время в формате ЧЧ:ММ:СС")
-    val line = readLine()
-    if (line != null) {
-        val seconds = timeStrToSeconds(line)
-        if (seconds == -1) {
-            println("Введённая строка $line не соответствует формату ЧЧ:ММ:СС")
-        } else {
-            println("Прошло секунд с начала суток: $seconds")
-        }
-    } else {
-        println("Достигнут <конец файла> в процессе чтения строки. Программа прервана")
-    }
-}
+//fun main() {
+//    println("Введите время в формате ЧЧ:ММ:СС")
+//    val line = readLine()
+//    if (line != null) {
+//        val seconds = timeStrToSeconds(line)
+//        if (seconds == -1) {
+//            println("Введённая строка $line не соответствует формату ЧЧ:ММ:СС")
+//        } else {
+//            println("Прошло секунд с начала суток: $seconds")
+//        }
+//    } else {
+//        println("Достигнут <конец файла> в процессе чтения строки. Программа прервана")
+//    }
+//}
 
 
 /**
@@ -75,13 +75,13 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-var months = listOf<String>("января", "февраля", "марта", "апреля", "мая",
+private var MONTHS = listOf<String>("января", "февраля", "марта", "апреля", "мая",
     "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
 fun dateStrToDigit(str: String): String {
     val str = str.split(" ")
-    if (str.size == 3 && daysInMonth(months.indexOf(str[1]) + 1.toInt(), str[2].toInt()) >= str[0].toInt())
-        return String.format("%02d.%02d.%02d", str[0].toInt(), months.indexOf(str[1]) + 1.toInt(), str[2].toInt())
-    else return ""
+        if (str.size == 3 && daysInMonth(MONTHS.indexOf(str[1]) + 1.toInt(), str[2].toInt()) >= str[0].toInt() &&
+            str[2].length == 4) return String.format("%02d.%02d.%02d", str[0].toInt(), MONTHS.indexOf(str[1]) + 1, str[2].toInt())
+        else return ""
 }
 /**
  * Средняя (4 балла)
@@ -93,8 +93,17 @@ fun dateStrToDigit(str: String): String {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
-
+fun dateDigitToStr(digital: String): String {
+    val str = digital.split(".")
+    try {
+        if (str.size == 3 && daysInMonth(str[1].toInt(), str[2].toInt()) >= str[0].toInt())
+            return String.format("%s %s %s", str[0].toInt(), MONTHS.get(str[1].toInt() - 1), str[2])
+        else return ""
+    }
+    catch (e: NumberFormatException) {
+        return ""
+    }
+}
 /**
  * Средняя (4 балла)
  *
@@ -110,7 +119,6 @@ fun dateDigitToStr(digital: String): String = TODO()
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
 fun flattenPhoneNumber(phone: String): String = TODO()
-
 /**
  * Средняя (5 баллов)
  *
@@ -121,8 +129,18 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
-
+fun bestLongJump(jumps: String): Int {
+    var jump = jumps.replace("""\s+%|\s+-""".toRegex(), "")
+    if (jump.matches(Regex("""(\d*+\s*)*"""))) {
+        try {
+            return jump.split(" ").map { it.toInt() }.max()
+        }
+        catch (e: java.lang.NumberFormatException) {
+            return -1
+        }
+    }
+    else return -1
+}
 /**
  * Сложная (6 баллов)
  *

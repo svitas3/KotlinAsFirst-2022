@@ -177,7 +177,12 @@ fun times(a: List<Int>, b: List<Int>): Int {
  */
 fun polynom(p: List<Int>, x: Int): Int {
     var px = 0
-    for (i in 0..p.size - 1) px += p[i] * (x.toDouble().pow(i)).toInt()
+    if (p.isNotEmpty()) px = p[0]
+    var x1 = x
+    for (i in 1..p.size - 1) {
+        px += p[i] * x1
+        x1 *= x
+    }
     return px
 }
 
@@ -259,14 +264,14 @@ fun convert(n: Int, base: Int): List<Int> {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-private val alphabet = mapOf(10 to "a", 11 to "b", 12 to "c", 13 to "d", 14 to "e", 15 to "f", 16 to "g", 17 to "h",
+private val ALPHABET = mapOf(10 to "a", 11 to "b", 12 to "c", 13 to "d", 14 to "e", 15 to "f", 16 to "g", 17 to "h",
     18 to "i", 19 to "j", 20 to "k", 21 to "l", 22 to "m", 23 to "n", 24 to "o", 25 to "p", 26 to "q", 27 to "r",
     28 to "s", 29 to "t", 30 to "u", 31 to "v", 32 to "w", 33 to "x", 34 to "y", 35 to "z")
 fun convertToString(n: Int, base: Int): String {
     val number = convert(n, base).toMutableList()
     var res = StringBuilder()
     for (i in 0..number.size - 1) {
-        if (number[i] in alphabet) res.append(alphabet[number[i]])
+        if (number[i] in ALPHABET) res.append(ALPHABET[number[i]])
         else res.append(number[i])
     }
     return res.toString()
@@ -324,46 +329,32 @@ fun decimalFromString(str: String, base: Int): Int {
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-private val digits = mapOf<Int, String>(1 to "I", 4 to "IV", 5 to "V", 9 to "IX", 10 to "X", 40 to "XL", 50 to "L",
+private val DIGITS = mapOf<Int, String>(1 to "I", 4 to "IV", 5 to "V", 9 to "IX", 10 to "X", 40 to "XL", 50 to "L",
     90 to "XC", 100 to "C", 400 to "CD", 500 to "D", 900 to "CM", 1000 to "M")
 fun counter (n: Int, count: Int): String {
     var res = StringBuilder()
     val length = count
-    if (n in digits) res = StringBuilder(digits[n * 10.toDouble().pow(length - 1).toInt()].toString())
-    if (n in 2..3) res = StringBuilder(digits[1 * 10.toDouble().pow(length - 1).toInt()].toString().repeat(n))
-    if (n in 6..8) res = StringBuilder(digits[5 * 10.toDouble().pow(length - 1).toInt()] +
-            digits[1 * 10.toDouble().pow(length - 1).toInt()].toString().repeat(n - 5))
+    if (n in DIGITS) res = StringBuilder(DIGITS[n * 10.toDouble().pow(length - 1).toInt()].toString())
+    if (n in 2..3) res = StringBuilder(DIGITS[1 * 10.toDouble().pow(length - 1).toInt()].toString().repeat(n))
+    if (n in 6..8) res = StringBuilder(DIGITS[5 * 10.toDouble().pow(length - 1).toInt()] +
+            DIGITS[1 * 10.toDouble().pow(length - 1).toInt()].toString().repeat(n - 5))
     return res.toString()
 }
 fun roman(n: Int): String {
-    var res = StringBuilder()
     var count = digitNumber(n)
-    if (n in digits) return digits[n].toString()
+    if (n in DIGITS) return DIGITS[n].toString()
     if (count == 1) return counter(n, count)
-    if (count == 2) {
-        res = StringBuilder(counter(n / 10, count))
+    var n = n.toString()
+    var res = StringBuilder(counter(n[0].digitToInt(), count))
+    count--
+    var i = 1
+    while (count != 0) {
+        res.append(counter(n[i].digitToInt(), count))
+        i++
         count--
-        res.append(counter(n % 10, count))
-    }
-    if (count == 3) {
-        res = StringBuilder(counter(n / 100, count))
-        count--
-        res.append(counter(n % 100 / 10, count))
-        count--
-        res.append(counter(n % 10, count))
-    }
-    if (count == 4) {
-        res = StringBuilder(counter(n / 1000, count))
-        count--
-        res.append(counter(n % 1000 / 100, count))
-        count--
-        res.append(counter(n % 100 / 10, count))
-        count--
-        res.append(counter(n % 10, count))
     }
     return res.toString()
 }
-
 /**
  * Очень сложная (7 баллов)
  *

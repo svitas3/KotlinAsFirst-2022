@@ -221,7 +221,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
             product = pair.second.toInt()
         }
     }
-    return count
+    if (count != "") return count else return null
 }
 /**
  * Средняя (3 балла)
@@ -320,18 +320,15 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
     var acquaintances = friends.toMutableMap()
     for ((name, handshakes) in friends) {
         for (names in handshakes) {
-            if (names in acquaintances) {
-            for (i in acquaintances[names]!!) {
+            for (i in (acquaintances[names] ?: setOf())) {
                 if (name != i) acquaintances[name] = acquaintances[name]!!.plus(i)
-                }
             }
-            else acquaintances[names] = setOf()
         }
     }
     for ((name, handshakes) in acquaintances) {
         for (names in handshakes) {
             for (i in acquaintances[names]!!) {
-                if (name != i) acquaintances[name] = acquaintances[name]!!.plus(i)
+                if (name != i && name in acquaintances) acquaintances[name] = acquaintances[name]!!.plus(i)
             }
         }
     }
@@ -355,13 +352,15 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    list.sorted()
     for (i in 0.. list.size - 1) {
         for (j in i..list.size - 1) {
             if (list[i] + list[j] == number && i != j) return Pair(i, j)
         }
     }
     return Pair(-1, -1)
+}
+fun main () {
+    println(findSumOfTwo(listOf(1, 2, 3), 4))
 }
 /**
  * Очень сложная (8 баллов)
@@ -386,21 +385,38 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     var bag = listOf<Pair<Int, Int>>()
-    var bag1 = setOf<String>()
+    var bag1 = listOf<Pair<Int, Int>>()
+    var bag2 = setOf<String>()
+    var bagend = mutableListOf<Pair<Int, Int>>()
     val weightPrice = treasures.values.toList().sortedByDescending { (k, v) -> v }
-    val p = treasures.values
+    println(weightPrice)
     var count = capacity
-    for (i in weightPrice) {
-        if (i.first <= count) {
-            count -= i.first
-            bag = bag.plus(i)
+    var count1 = capacity
+    for (j in 1..weightPrice.size - 1) {
+        if (weightPrice[j - 1].first + weightPrice[j].first <= count) {
+            count -= weightPrice[j].first
+            bag = bag.plus(weightPrice[j - 1])
+            bag = bag.plus(weightPrice[j])
+        }
+        if (weightPrice[j - 1].first <= count1) {
+            count1 -= weightPrice[j - 1].first
+            bag1 = bag1.plus(weightPrice[j - 1])
         }
     }
-    count = bag.size
-    for (i in bag) {
+    val b = bag.sumBy { it.second }
+    val b1 = bag1.sumBy { it.second }
+    if (b > b1) bagend.addAll(bag) else bagend.addAll(bag1)
+    println(bagend)
+    count = bagend.size
+    for (i in bagend) {
         for (j in treasures) {
-            if (i == j.value && bag1.size + 1 <= count) bag1 = bag1.plus(j.key)
+            if (i == j.value && bag2.size + 1 <= count) bag2 = bag2.plus(j.key)
         }
     }
-    return bag1
+    return bag2
 }
+//fun main () {
+//    println(bagPacking(mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),
+//        850
+//    ))
+//}

@@ -118,20 +118,12 @@ fun minDivisor(n: Int): Int {
     }
     return n
 }
-
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    var max = 0
-    for (i in 1..(n / 2)) {
-        if (n % i == 0) max = i
-    }
-    return max
-}
-
+fun maxDivisor(n: Int): Int = n / minDivisor(n)
 /**
  * Простая (2 балла)
  *
