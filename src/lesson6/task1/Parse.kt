@@ -2,6 +2,7 @@
 
 package lesson6.task1
 import lesson2.task2.daysInMonth
+import java.lang.IllegalArgumentException
 
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
@@ -79,8 +80,8 @@ private var MONTHS = listOf<String>("января", "февраля", "март�
     "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
 fun dateStrToDigit(str: String): String {
     val str = str.split(" ")
-        if (str.size == 3 && daysInMonth(MONTHS.indexOf(str[1]) + 1.toInt(), str[2].toInt()) >= str[0].toInt() &&
-            str[2].length == 4) return String.format("%02d.%02d.%02d", str[0].toInt(), MONTHS.indexOf(str[1]) + 1, str[2].toInt())
+        if (str.size == 3 && daysInMonth(MONTHS.indexOf(str[1]) + 1.toInt(), str[2].toInt()) >= str[0].toInt())
+            return String.format("%02d.%02d.%d", str[0].toInt(), MONTHS.indexOf(str[1]) + 1, str[2].toInt())
         else return ""
 }
 /**
@@ -118,7 +119,16 @@ fun dateDigitToStr(digital: String): String {
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String {
+    val symbols = mapOf(" -" to "", "- " to "", "-" to "", "(" to "", ")" to "")
+    var phone = phone
+    symbols.forEach { l, r -> phone = phone.replace(l, r) }
+    if (phone.matches(Regex("""(\+)?+(\d*|\s)*"""))) {
+        phone = phone.replace(" ".toRegex(), "")
+        if (phone.length > 5) return phone else return ""
+    }
+    return ""
+}
 /**
  * Средняя (5 баллов)
  *
@@ -131,15 +141,13 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  */
 fun bestLongJump(jumps: String): Int {
     var jump = jumps.replace("""\s+%|\s+-""".toRegex(), "")
-    if (jump.matches(Regex("""(\d*+\s*)*"""))) {
-        try {
-            return jump.split(" ").map { it.toInt() }.max()
-        }
-        catch (e: java.lang.NumberFormatException) {
-            return -1
-        }
+    if (!jump.matches(Regex("""(\d*+\s*)*"""))) return -1
+    try {
+        return jump.split(" ").map { it.toInt() }.max()
     }
-    else return -1
+    catch (e: java.lang.NumberFormatException) {
+        return -1
+    }
 }
 /**
  * Сложная (6 баллов)
@@ -152,8 +160,17 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
-
+fun bestHighJump(jumps: String): Int {
+    val symbols = mapOf(" -" to "", "%" to "", "-" to "")
+    var jumps = jumps
+    symbols.forEach { l, r -> jumps = jumps.replace(l, r) }
+    val jump = jumps.split(" ")
+    var max = -1
+    for (i in 0..jump.size - 2) {
+        if ((jump[i + 1] == "+" || jump[i + 1] == " +") && jump[i].toInt() > max) max = jump[i].toInt()
+    }
+    return max
+}
 /**
  * Сложная (6 баллов)
  *
@@ -163,8 +180,17 @@ fun bestHighJump(jumps: String): Int = TODO()
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
-
+fun plusMinus(expression: String): Int {
+    var express = expression
+    if (!express.matches(Regex("""(\d*(\s+(\+|\-)+\s+\d*))*|\d*"""))) throw IllegalArgumentException()
+    val ex = expression.split(" ")
+    var res = ex[0].toInt()
+    for (i in 1..ex.size - 2) {
+        if (ex[i] == "+") res += ex[i + 1].toInt()
+        else if (ex[i] == "-") res -= ex[i + 1].toInt()
+    }
+    return res
+}
 /**
  * Сложная (6 баллов)
  *
@@ -174,8 +200,14 @@ fun plusMinus(expression: String): Int = TODO()
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
-
+fun firstDuplicateIndex(str: String): Int {
+    val str1 = str.split(" ").map { it.lowercase() }
+    val count = (str1.groupingBy { it }.eachCount()).filter{ it.value > 1 }
+    if (count.isEmpty()) return -1
+    val word = count.keys.toList()[0].toString().replace("[", "").replace("]", "")
+    var str = str.replace(word,"012")
+    return str.indexOf("012")
+}
 /**
  * Сложная (6 баллов)
  *
