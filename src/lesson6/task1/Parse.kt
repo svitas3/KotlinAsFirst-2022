@@ -49,20 +49,20 @@ fun timeSecondsToStr(seconds: Int): String {
 /**
  * Пример: консольный ввод
  */
-//fun main() {
-//    println("Введите время в формате ЧЧ:ММ:СС")
-//    val line = readLine()
-//    if (line != null) {
-//        val seconds = timeStrToSeconds(line)
-//        if (seconds == -1) {
-//            println("Введённая строка $line не соответствует формату ЧЧ:ММ:СС")
-//        } else {
-//            println("Прошло секунд с начала суток: $seconds")
-//        }
-//    } else {
-//        println("Достигнут <конец файла> в процессе чтения строки. Программа прервана")
-//    }
-//}
+fun main() {
+    println("Введите время в формате ЧЧ:ММ:СС")
+    val line = readLine()
+    if (line != null) {
+        val seconds = timeStrToSeconds(line)
+        if (seconds == -1) {
+            println("Введённая строка $line не соответствует формату ЧЧ:ММ:СС")
+        } else {
+            println("Прошло секунд с начала суток: $seconds")
+        }
+    } else {
+        println("Достигнут <конец файла> в процессе чтения строки. Программа прервана")
+    }
+}
 
 
 /**
@@ -126,11 +126,12 @@ fun dateDigitToStr(digital: String): String {
  */
 fun flattenPhoneNumber(phone: String): String {
     val symbols = mapOf(" -" to "", "- " to "", "-" to "", "(" to "", ")" to "")
-    var phone = phone
-    symbols.forEach { l, r -> phone = phone.replace(l, r) }
-    if (phone.matches(Regex("""(\+)?+(\d*|\s)*"""))) {
-        phone = phone.replace(" ".toRegex(), "")
-        if (phone.length > 5) return phone else return ""
+    var number = phone
+    if (!number.matches(Regex("""(\+)?+(\d*|\s|\(+\d+|\)|\-)*"""))) return ""
+    symbols.forEach { l, r -> number = number.replace(l, r) }
+    if (number.matches(Regex("""(\+)?+(\d*|\s)*"""))) {
+        number = number.replace(" ".toRegex(), "")
+        return number
     }
     return ""
 }
@@ -224,8 +225,20 @@ fun firstDuplicateIndex(str: String): Int {
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше нуля либо равны нулю.
  */
-fun mostExpensive(description: String): String = TODO()
-
+fun mostExpensive(description: String): String {
+    val description = description.replace(";", "")
+    if (!description.matches(Regex("""([А-я]+\s+\d+(\.+\d+|\s)+\s?)*"""))) return ""
+    val list = description.split(" ")
+    var max = 0.0
+    var res = ""
+    for (i in 1..list.size - 1 step 2) {
+        if (list[i].toDouble() > max) {
+            max = list[i].toDouble()
+            res = list[i - 1]
+        }
+    }
+    return res
+}
 /**
  * Сложная (6 баллов)
  *
