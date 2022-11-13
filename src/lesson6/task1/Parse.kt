@@ -127,7 +127,7 @@ fun dateDigitToStr(digital: String): String {
 fun flattenPhoneNumber(phone: String): String {
     val symbols = mapOf(" -" to "", "- " to "", "-" to "", "(" to "", ")" to "")
     var number = phone
-    if (!number.matches(Regex("""(\+)?+(\d*|\s|\(+\d+|\)|\-)*"""))) return ""
+    if (!number.matches(Regex("""(\+)?+(\d*|\s|\(+\d+|\)|\-)+"""))) return ""
     symbols.forEach { l, r -> number = number.replace(l, r) }
     if (number.matches(Regex("""(\+)?+(\d*|\s)*"""))) {
         number = number.replace(" ".toRegex(), "")
@@ -227,9 +227,9 @@ fun firstDuplicateIndex(str: String): Int {
  */
 fun mostExpensive(description: String): String {
     val description = description.replace(";", "")
-    if (!description.matches(Regex("""([А-я]+\s+\d+(\.+\d+|\s)+\s?)*"""))) return ""
+    if (!description.matches(Regex("""(([А-я]|[A-z])+\s+\d+(\.+\d+|\s)?\s?)*"""))) return ""
     val list = description.split(" ")
-    var max = 0.0
+    var max = -1.0
     var res = ""
     for (i in 1..list.size - 1 step 2) {
         if (list[i].toDouble() > max) {
@@ -250,7 +250,10 @@ fun mostExpensive(description: String): String {
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int = TODO()
+fun fromRoman(roman: String): Int {
+    if (!roman.matches(Regex("""()"""))) return -1
+    return 0
+}
 
 /**
  * Очень сложная (7 баллов)
