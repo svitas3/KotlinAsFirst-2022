@@ -49,20 +49,20 @@ fun timeSecondsToStr(seconds: Int): String {
 /**
  * Пример: консольный ввод
  */
-fun main() {
-    println("Введите время в формате ЧЧ:ММ:СС")
-    val line = readLine()
-    if (line != null) {
-        val seconds = timeStrToSeconds(line)
-        if (seconds == -1) {
-            println("Введённая строка $line не соответствует формату ЧЧ:ММ:СС")
-        } else {
-            println("Прошло секунд с начала суток: $seconds")
-        }
-    } else {
-        println("Достигнут <конец файла> в процессе чтения строки. Программа прервана")
-    }
-}
+//fun main() {
+//    println("Введите время в формате ЧЧ:ММ:СС")
+//    val line = readLine()
+//    if (line != null) {
+//        val seconds = timeStrToSeconds(line)
+//        if (seconds == -1) {
+//            println("Введённая строка $line не соответствует формату ЧЧ:ММ:СС")
+//        } else {
+//            println("Прошло секунд с начала суток: $seconds")
+//        }
+//    } else {
+//        println("Достигнут <конец файла> в процессе чтения строки. Программа прервана")
+//    }
+//}
 
 
 /**
@@ -80,9 +80,14 @@ private var MONTHS = listOf<String>("января", "февраля", "март�
     "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
 fun dateStrToDigit(str: String): String {
     val str = str.split(" ")
+    try {
         if (str.size == 3 && daysInMonth(MONTHS.indexOf(str[1]) + 1.toInt(), str[2].toInt()) >= str[0].toInt())
             return String.format("%02d.%02d.%d", str[0].toInt(), MONTHS.indexOf(str[1]) + 1, str[2].toInt())
-        else return ""
+    }
+    catch (e: NumberFormatException) {
+        return ""
+    }
+    return ""
 }
 /**
  * Средняя (4 балла)
@@ -205,7 +210,7 @@ fun firstDuplicateIndex(str: String): Int {
     val count = (str1.groupingBy { it }.eachCount()).filter{ it.value > 1 }
     if (count.isEmpty()) return -1
     val word = count.keys.toList()[0].toString().replace("[", "").replace("]", "")
-    var str = str.replace(word,"012")
+    var str = str.lowercase().replace(word,"012")
     return str.indexOf("012")
 }
 /**
