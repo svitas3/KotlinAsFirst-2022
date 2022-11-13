@@ -49,20 +49,20 @@ fun timeSecondsToStr(seconds: Int): String {
 /**
  * Пример: консольный ввод
  */
-fun main() {
-    println("Введите время в формате ЧЧ:ММ:СС")
-    val line = readLine()
-    if (line != null) {
-        val seconds = timeStrToSeconds(line)
-        if (seconds == -1) {
-            println("Введённая строка $line не соответствует формату ЧЧ:ММ:СС")
-        } else {
-            println("Прошло секунд с начала суток: $seconds")
-        }
-    } else {
-        println("Достигнут <конец файла> в процессе чтения строки. Программа прервана")
-    }
-}
+//fun main() {
+//    println("Введите время в формате ЧЧ:ММ:СС")
+//    val line = readLine()
+//    if (line != null) {
+//        val seconds = timeStrToSeconds(line)
+//        if (seconds == -1) {
+//            println("Введённая строка $line не соответствует формату ЧЧ:ММ:СС")
+//        } else {
+//            println("Прошло секунд с начала суток: $seconds")
+//        }
+//    } else {
+//        println("Достигнут <конец файла> в процессе чтения строки. Программа прервана")
+//    }
+//}
 
 
 /**
@@ -227,7 +227,7 @@ fun firstDuplicateIndex(str: String): Int {
  */
 fun mostExpensive(description: String): String {
     val description = description.replace(";", "")
-    if (!description.matches(Regex("""(([А-я]|[A-z])+\s+\d+(\.+\d+|\s)?\s?)*"""))) return ""
+    if (!description.matches(Regex("""(.+\s+\d+(\.+\d+|\s)?\s?)*"""))) return ""
     val list = description.split(" ")
     var max = -1.0
     var res = ""
@@ -250,11 +250,16 @@ fun mostExpensive(description: String): String {
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
+private val DIGITS = mapOf<String, Int>("I" to 1, "IV" to 4, "V" to 5, "IX" to 9, "X" to 10, "XL" to 40, "L" to 50,
+    "XC" to 90, "C" to 100, "CD" to 400, "D" to 500, "CM" to 900, "M" to 1000)
 fun fromRoman(roman: String): Int {
-    if (!roman.matches(Regex("""()"""))) return -1
+    if (!roman.matches(Regex("""[MLIVCDX]*"""))) return -1
+
     return 0
 }
-
+fun main () {
+    println(fromRoman("MCMLXXVIII"))
+}
 /**
  * Очень сложная (7 баллов)
  *
