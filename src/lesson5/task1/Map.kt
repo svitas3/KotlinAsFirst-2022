@@ -213,17 +213,16 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *   ) -> "Мария"
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    var count = ""
-    val value = stuff.values.map { (k, v) -> k }
-    if (kind !in value) return null
+    var res = ""
+    if (stuff.values.filter { it.first == kind }.map { (k, v) -> k }.isEmpty()) return null
     var product = Int.MAX_VALUE
     for ((name, pair) in stuff) {
         if (pair.second < product && pair.first == kind) {
-            count = name
+            res = name
             product = pair.second.toInt()
         }
     }
-    return count
+    return res
 }
 /**
  * Средняя (3 балла)
@@ -235,11 +234,10 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    var count = 0
-    val word = word.toLowerCase()
+    val word = word.toSet()
     val chars = chars.map { it.lowercaseChar() }
-    for (i in 0..word.length - 1) if (word[i] in chars) count++
-    return count == word.length
+    for (i in word) if (i !in chars) return false
+    return true
 }
 /**
  * Средняя (4 балла)
@@ -253,14 +251,7 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
  * Например:
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
-fun extractRepeats(list: List<String>): Map<String, Int> {
-    try {
-        return (list.groupingBy { it.first().toString() }.eachCount()).filter { it.value > 1 }
-    }
-    catch (e: NoSuchElementException) {
-        return emptyMap()
-    }
-}
+fun extractRepeats(list: List<String>): Map<String, Int> = (list.groupingBy { it }.eachCount()).filter { it.value > 1 }
 /**
  * Средняя (3 балла)
  *
@@ -336,6 +327,9 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
     }
     return acquaintances
 }
+//fun main () {
+//    println(propagateHandshakes())
+//}
 /**
  * Сложная (6 баллов)
  *
@@ -354,12 +348,23 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    for (i in 0.. list.size - 1) {
-        for (j in i..list.size - 1) {
-            if (list[i] + list[j] == number && i != j) return Pair(i, j)
+    val list = list.sorted()
+    var pair = Pair(-1, -1)
+    var a = 0
+    var b = list.size - 1
+    try {
+        while (list[a] + list[b] != number) {
+            if (list[a] + list[b] != number) {
+                a++
+                b--
+            }
         }
     }
-    return Pair(-1, -1)
+    catch (e: IndexOutOfBoundsException) {
+        return pair
+    }
+    pair = a to b
+    return pair
 }
 /**
  * Очень сложная (8 баллов)

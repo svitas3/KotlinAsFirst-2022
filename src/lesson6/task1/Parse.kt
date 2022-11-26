@@ -209,10 +209,16 @@ fun plusMinus(expression: String): Int {
 fun firstDuplicateIndex(str: String): Int {
     val str1 = str.split(" ").map { it.lowercase() }
     val count = (str1.groupingBy { it }.eachCount()).filter{ it.value > 1 }
-    if (count.isEmpty()) return -1
-    val word = count.keys.toList()[0].toString().replace("[", "").replace("]", "")
-    var str = str.lowercase().replace(word,"012")
-    return str.indexOf("012")
+    var word = ""
+    for (i in 0..str1.size - 2) {
+        if (str1[i] == str1[i + 1]) {
+            word = str1[i]
+            break
+        }
+    }
+    if (count.isEmpty() || word == "") return -1
+    var str = str.lowercase().replace(word,"01")
+    return str.indexOf("01 01")
 }
 /**
  * Сложная (6 баллов)
@@ -256,9 +262,9 @@ fun fromRoman(roman: String): Int {
     if (!roman.matches(Regex("""[MLIVCDX]*"""))) return -1
     return 0
 }
-fun main () {
-    println(fromRoman("MCMLXXVIII"))
-}
+//fun main () {
+//    println(fromRoman("MCMLXXVIII"))
+//}
 /**
  * Очень сложная (7 баллов)
  *

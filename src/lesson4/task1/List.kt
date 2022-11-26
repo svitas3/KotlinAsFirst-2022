@@ -285,15 +285,15 @@ fun convertToString(n: Int, base: Int): String {
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
 fun decimal(digits: List<Int>, base: Int): Int {
-    var res = 0
-    var size = digits.size
-    for (i in digits) {
-        res += i * (base.toDouble().pow(size - 1)).toInt()
-        size--
+    val digits = digits.reversed()
+    var res = digits[0]
+    var base1 = base
+    for (i in 1..digits.size - 1) {
+        res += digits[i] * base1
+        base1 *= base
     }
     return res
 }
-
 /**
  * Сложная (4 балла)
  *
@@ -306,19 +306,16 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-private val alphabet1 = mapOf("a" to 10, "b" to 11, "c" to 12, "d" to 13, "e" to 14, "f" to 15, "g" to 16, "h" to 17,
-    "i" to 18, "j" to 19, "k" to 20, "l" to 21, "m" to 22, "n" to 23, "o" to 24, "p" to 25, "q" to 26, "r" to 27,
-    "s" to 28, "t" to 29, "u" to 30, "v" to 31, "w" to 32, "x" to 33, "y" to 34, "z" to 35)
+private val alphabet1 = mapOf('a' to 10, 'b' to 11, 'c' to 12, 'd' to 13, 'e' to 14, 'f' to 15, 'g' to 16, 'h' to 17,
+    'i' to 18, 'j' to 19, 'k' to 20, 'l' to 21, 'm' to 22, 'n' to 23, 'o' to 24, 'p' to 25, 'q' to 26, 'r' to 27,
+    's' to 28, 't' to 29, 'u' to 30, 'v' to 31, 'w' to 32, 'x' to 33, 'y' to 34, 'z' to 35)
 fun decimalFromString(str: String, base: Int): Int {
-    var str1 = mutableListOf<String>()
-    for (i in str) {
-        str1.add(i.toString())
+    var str1 = mutableListOf<Int>()
+    for (i in 0..str.length - 1) {
+        if (alphabet1.containsKey(str[i])) str1.add(alphabet1[str[i]]!!)
+        else str1.add(str[i].digitToInt())
     }
-    for (i in 0..str1.size - 1) {
-        if (alphabet1.containsKey(str1[i])) str1[i] = alphabet1[str1[i]].toString()
-    }
-    val res = str1.map { it.toInt() }
-    val number = decimal(res, base)
+    val number = decimal(str1, base)
     return number
 }
 /**
@@ -332,12 +329,12 @@ fun decimalFromString(str: String, base: Int): Int {
 private val DIGITS = mapOf<Int, String>(1 to "I", 4 to "IV", 5 to "V", 9 to "IX", 10 to "X", 40 to "XL", 50 to "L",
     90 to "XC", 100 to "C", 400 to "CD", 500 to "D", 900 to "CM", 1000 to "M")
 fun counter (n: Int, count: Int): String {
-    var res = StringBuilder()
+    var res = ""
     val length = count
-    if (n in DIGITS) res = StringBuilder(DIGITS[n * 10.toDouble().pow(length - 1).toInt()].toString())
-    if (n in 2..3) res = StringBuilder(DIGITS[1 * 10.toDouble().pow(length - 1).toInt()].toString().repeat(n))
-    if (n in 6..8) res = StringBuilder(DIGITS[5 * 10.toDouble().pow(length - 1).toInt()] +
-            DIGITS[1 * 10.toDouble().pow(length - 1).toInt()].toString().repeat(n - 5))
+    if (n in DIGITS) res = DIGITS[n * 10.toDouble().pow(length - 1).toInt()].toString()
+    if (n in 2..3) res = DIGITS[1 * 10.toDouble().pow(length - 1).toInt()].toString().repeat(n)
+    if (n in 6..8) res = DIGITS[5 * 10.toDouble().pow(length - 1).toInt()] +
+            DIGITS[1 * 10.toDouble().pow(length - 1).toInt()].toString().repeat(n - 5)
     return res.toString()
 }
 fun roman(n: Int): String {
