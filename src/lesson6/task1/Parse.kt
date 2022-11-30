@@ -135,6 +135,9 @@ fun flattenPhoneNumber(phone: String): String {
     }
     return ""
 }
+//fun main () {
+//    println(flattenPhoneNumber("\n"))
+//}
 /**
  * Средняя (5 баллов)
  *
@@ -151,7 +154,7 @@ fun bestLongJump(jumps: String): Int {
     try {
         return jump.split(" ").map { it.toInt() }.max()
     }
-    catch (e: java.lang.NumberFormatException) {
+    catch (e: NumberFormatException) {
         return -1
     }
 }
@@ -219,6 +222,9 @@ fun firstDuplicateIndex(str: String): Int {
     if (count.isEmpty() || word == "") return -1
     var str = str.lowercase().replace(word,"01")
     return str.indexOf("01 01")
+}
+fun main () {
+    println(firstDuplicateIndex("Он пошёл в в школу"))
 }
 /**
  * Сложная (6 баллов)

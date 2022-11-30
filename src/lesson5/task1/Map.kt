@@ -214,12 +214,12 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
     var res = ""
-    if (stuff.values.filter { it.first == kind }.map { (k, v) -> k }.isEmpty()) return null
-    var product = Int.MAX_VALUE
+    if (stuff.values.filter { it.first == kind }.map { (k, v) -> v }.isEmpty()) return null
+    var product = stuff.values.map { it.second }.max()
     for ((name, pair) in stuff) {
-        if (pair.second < product && pair.first == kind) {
+        if (pair.second <= product && pair.first == kind) {
             res = name
-            product = pair.second.toInt()
+            product = pair.second
         }
     }
     return res
@@ -234,7 +234,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    val word = word.toSet()
+    val word = word.lowercase().toSet()
     val chars = chars.map { it.lowercaseChar() }
     for (i in word) if (i !in chars) return false
     return true
@@ -348,23 +348,21 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    val list = list.sorted()
-    var pair = Pair(-1, -1)
+    val digits = list.mapIndexed { index: Int, num: Int -> index to num }.toMap()
     var a = 0
-    var b = list.size - 1
-    try {
-        while (list[a] + list[b] != number) {
-            if (list[a] + list[b] != number) {
-                a++
-                b--
-            }
+    var b = 0
+    var num = number
+    for (i in digits) {
+        if (i.value <= num && (num - i.value) in digits.values && num - i.value != i.value) {
+            num -= i.value
+            a = i.key
+            break
         }
     }
-    catch (e: IndexOutOfBoundsException) {
-        return pair
+    for (k in digits) {
+        if (k.value == num) b = k.key
     }
-    pair = a to b
-    return pair
+    if (b == 0) return Pair(-1, -1) else return a to b
 }
 /**
  * Очень сложная (8 баллов)
@@ -388,34 +386,17 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    var bag = listOf<Pair<Int, Int>>()
-    var bag1 = listOf<Pair<Int, Int>>()
-    var bag2 = setOf<String>()
-    var bagend = mutableListOf<Pair<Int, Int>>()
-    val weightPrice = treasures.values.toList().sortedByDescending { (k, v) -> v }
-    println(weightPrice)
-    var count = capacity
-    var count1 = capacity
-    for (j in 1..weightPrice.size - 1) {
-        if (weightPrice[j - 1].first + weightPrice[j].first <= count) {
-            count -= weightPrice[j].first
-            bag = bag.plus(weightPrice[j - 1])
-            bag = bag.plus(weightPrice[j])
-        }
-        if (weightPrice[j - 1].first <= count1) {
-            count1 -= weightPrice[j - 1].first
-            bag1 = bag1.plus(weightPrice[j - 1])
+    val cost = treasures.toList().sortedByDescending { (k, v) -> v.second }.map { it.first to it.second.second }.toMap()
+    val weight = treasures.toList().map { it.first to it.second.first }.toMap()
+    var count = 0
+    var capacity = capacity
+    var res = mutableSetOf<String>()
+    for (i in cost) {
+        if (i.value >= count && weight[i.key]!! <= capacity) {
+            count -= i.value
+            capacity -= weight[i.key]!!
+            res.add(i.key)
         }
     }
-    val b = bag.sumBy { it.second }
-    val b1 = bag1.sumBy { it.second }
-    if (b > b1) bagend.addAll(bag) else bagend.addAll(bag1)
-    println(bagend)
-    count = bagend.size
-    for (i in bagend) {
-        for (j in treasures) {
-            if (i == j.value && bag2.size + 1 <= count) bag2 = bag2.plus(j.key)
-        }
-    }
-    return bag2
+    return res
 }
