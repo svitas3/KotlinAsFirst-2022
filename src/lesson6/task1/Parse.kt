@@ -2,7 +2,10 @@
 
 package lesson6.task1
 import lesson2.task2.daysInMonth
+import lesson3.task1.digitNumber
 import java.lang.IllegalArgumentException
+import java.lang.StringBuilder
+import kotlin.math.pow
 
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
@@ -76,17 +79,12 @@ fun timeSecondsToStr(seconds: Int): String {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-private var MONTHS = listOf<String>("января", "февраля", "марта", "апреля", "мая",
-    "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
+private var MONTHS = mapOf<String, Int>("января" to 1, "февраля" to 2, "марта" to 3, "апреля" to 4, "мая" to 5,
+    "июня" to 6, "июля" to 7, "августа" to 8, "сентября" to 9, "октября" to 10, "ноября" to 11, "декабря" to 12)
 fun dateStrToDigit(str: String): String {
     val str = str.split(" ")
-    try {
-        if (str.size == 3 && daysInMonth(MONTHS.indexOf(str[1]) + 1.toInt(), str[2].toInt()) >= str[0].toInt())
-            return String.format("%02d.%02d.%d", str[0].toInt(), MONTHS.indexOf(str[1]) + 1, str[2].toInt())
-    }
-    catch (e: NumberFormatException) {
-        return ""
-    }
+    if (str.size == 3 && str[1] in MONTHS && daysInMonth(MONTHS[str[1]]!!.toInt(), str[2].toInt()) >= str[0].toInt())
+            return String.format("%02d.%02d.%d", str[0].toInt(), MONTHS[str[1]]!!, str[2].toInt())
     return ""
 }
 /**
@@ -99,11 +97,13 @@ fun dateStrToDigit(str: String): String {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
+private var MONTHS1 = mapOf<Int, String>(1 to "января", 2 to "февраля", 3 to "марта", 4 to "апреля", 5 to "мая",
+    6 to "июня", 7 to "июля", 8 to "августа", 9 to "сентября", 10 to "октября", 11 to "ноября", 12 to "декабря")
 fun dateDigitToStr(digital: String): String {
     val str = digital.split(".")
     try {
         if (str.size == 3 && daysInMonth(str[1].toInt(), str[2].toInt()) >= str[0].toInt())
-            return String.format("%s %s %s", str[0].toInt(), MONTHS.get(str[1].toInt() - 1), str[2])
+            return String.format("%s %s %s", str[0].toInt(), MONTHS1.get(str[1].toInt()), str[2])
         else return ""
     }
     catch (e: NumberFormatException) {
@@ -125,19 +125,16 @@ fun dateDigitToStr(digital: String): String {
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
 fun flattenPhoneNumber(phone: String): String {
-    val symbols = mapOf(" -" to "", "- " to "", "-" to "", "(" to "", ")" to "")
+    val symbols = mapOf("-" to "", "(" to "", ")" to "")
     var number = phone
     if (!number.matches(Regex("""(\+)?+(\d*|\s|\(+\d+|\)|\-)+"""))) return ""
-    symbols.forEach { l, r -> number = number.replace(l, r) }
+    number = Regex("""(\-|\(|\))""").replace(number, "")
     if (number.matches(Regex("""(\+)?+(\d*|\s)*"""))) {
         number = number.replace(" ".toRegex(), "")
         return number
     }
     return ""
 }
-//fun main () {
-//    println(flattenPhoneNumber("\n"))
-//}
 /**
  * Средняя (5 баллов)
  *
@@ -211,20 +208,15 @@ fun plusMinus(expression: String): Int {
  */
 fun firstDuplicateIndex(str: String): Int {
     val str1 = str.split(" ").map { it.lowercase() }
-    val count = (str1.groupingBy { it }.eachCount()).filter{ it.value > 1 }
-    var word = ""
+    var word = -1
     for (i in 0..str1.size - 2) {
         if (str1[i] == str1[i + 1]) {
-            word = str1[i]
+            word++
             break
         }
+        word += str1[i].length + 1
     }
-    if (count.isEmpty() || word == "") return -1
-    var str = str.lowercase().replace(word,"01")
-    return str.indexOf("01 01")
-}
-fun main () {
-    println(firstDuplicateIndex("Он пошёл в в школу"))
+    return word
 }
 /**
  * Сложная (6 баллов)
@@ -239,11 +231,11 @@ fun main () {
  */
 fun mostExpensive(description: String): String {
     val description = description.replace(";", "")
-    if (!description.matches(Regex("""(.+\s+\d+(\.+\d+|\s)?\s?)*"""))) return ""
     val list = description.split(" ")
     var max = -1.0
     var res = ""
     for (i in 1..list.size - 1 step 2) {
+        if (!list[i - 1].matches(Regex("""([A-я]*)""")) || !list[i].matches(Regex("""\d*+\.+\d"""))) return ""
         if (list[i].toDouble() > max) {
             max = list[i].toDouble()
             res = list[i - 1]
@@ -264,13 +256,36 @@ fun mostExpensive(description: String): String {
  */
 private val DIGITS = mapOf<String, Int>("I" to 1, "IV" to 4, "V" to 5, "IX" to 9, "X" to 10, "XL" to 40, "L" to 50,
     "XC" to 90, "C" to 100, "CD" to 400, "D" to 500, "CM" to 900, "M" to 1000)
+fun counter (n: String, count: Int): Int {
+    var res = 0
+    val length = count
+    if (n in DIGITS) res = DIGITS[n]!!
+//        .times(10.toDouble().pow(length - 1).toInt()).toString()
+    println(res)
+    if (DIGITS[n] in 2..3) res = DIGITS["I"]!!.times(10.toDouble().pow(length - 1).toInt()).toString().repeat(DIGITS[n]!!).toInt()
+    if (DIGITS[n] in 6..8) res = DIGITS["V"]!!.times(10.toDouble().pow(length - 1).toInt()).plus(
+            DIGITS["I"]!!.times(10.toDouble().pow(length - 1).toInt())).toString().repeat(DIGITS[n]!! - 5).toInt()
+    return res
+}
 fun fromRoman(roman: String): Int {
     if (!roman.matches(Regex("""[MLIVCDX]*"""))) return -1
-    return 0
+    if (roman in DIGITS) return DIGITS[roman]!!
+    var count = roman.length
+    if (count == 1) return counter(roman, count).toInt()
+    var roman = roman
+    var res = counter(roman[0].toString(), count)
+    count--
+    var i = 1
+    while (count != 0) {
+        res += counter(roman[i].toString(), count)
+        i++
+        count--
+    }
+    return res
 }
-//fun main () {
-//    println(fromRoman("MCMLXXVIII"))
-//}
+fun main () {
+    println(fromRoman("XIV"))
+}
 /**
  * Очень сложная (7 баллов)
  *

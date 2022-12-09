@@ -349,8 +349,8 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     val digits = list.mapIndexed { index: Int, num: Int -> index to num }.toMap()
-    var a = 0
-    var b = 0
+    var a = -1
+    var b = -1
     var num = number
     for (i in digits) {
         if (i.value <= num && (num - i.value) in digits.values && num - i.value != i.value) {
@@ -362,7 +362,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     for (k in digits) {
         if (k.value == num) b = k.key
     }
-    if (b == 0) return Pair(-1, -1) else return a to b
+    if (a == -1 || b == -1) return Pair(-1, -1) else return a to b
 }
 /**
  * Очень сложная (8 баллов)
@@ -387,11 +387,12 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     val cost = treasures.toList().sortedByDescending { (k, v) -> v.second }.map { it.first to it.second.second }.toMap()
-    val weight = treasures.toList().map { it.first to it.second.first }.toMap()
+    val weight = treasures.toList().sortedByDescending { (k, v) -> v.second }.map { it.first to it.second.first }.toMap()
+    val sortedCost = cost.toList().sortedWith(compareBy ({ weight[it.first] }, { it.second })).sortedByDescending { (k, v) -> v }.toMap()
     var count = 0
     var capacity = capacity
     var res = mutableSetOf<String>()
-    for (i in cost) {
+    for (i in sortedCost) {
         if (i.value >= count && weight[i.key]!! <= capacity) {
             count -= i.value
             capacity -= weight[i.key]!!
