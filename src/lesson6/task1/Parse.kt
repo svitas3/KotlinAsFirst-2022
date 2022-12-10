@@ -266,7 +266,7 @@ fun counter (n: String, count: Int): Int {
     return res
 }
 fun fromRoman(roman: String): Int {
-    if (!roman.matches(Regex("""[MLIVCDX]*"""))) return -1
+    if (!roman.matches(Regex("""[MLIVCDX]*""")) || roman == "") return -1
     if (roman in DIGITS) return DIGITS[roman]!!
     var count = roman.length
     if (count == 1) return counter(roman, count).toInt()
@@ -286,9 +286,6 @@ fun fromRoman(roman: String): Int {
         }
     }
     return res
-}
-fun main () {
-    println(fromRoman("XLIX"))
 }
 /**
  * Очень сложная (7 баллов)
