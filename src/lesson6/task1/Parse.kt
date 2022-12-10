@@ -260,8 +260,6 @@ fun counter (n: String, count: Int): Int {
     var res = 0
     val length = count
     if (n in DIGITS) res = DIGITS[n]!!
-//        .times(10.toDouble().pow(length - 1).toInt()).toString()
-    println(res)
     if (DIGITS[n] in 2..3) res = DIGITS["I"]!!.times(10.toDouble().pow(length - 1).toInt()).toString().repeat(DIGITS[n]!!).toInt()
     if (DIGITS[n] in 6..8) res = DIGITS["V"]!!.times(10.toDouble().pow(length - 1).toInt()).plus(
             DIGITS["I"]!!.times(10.toDouble().pow(length - 1).toInt())).toString().repeat(DIGITS[n]!! - 5).toInt()
@@ -273,18 +271,24 @@ fun fromRoman(roman: String): Int {
     var count = roman.length
     if (count == 1) return counter(roman, count).toInt()
     var roman = roman
-    var res = counter(roman[0].toString(), count)
-    count--
-    var i = 1
-    while (count != 0) {
-        res += counter(roman[i].toString(), count)
-        i++
-        count--
+    var res = 0
+    var i = 0
+    while (count != 0 && i <= roman.length) {
+        if (i + 1 < roman.length && roman[i].toString() + roman[i + 1].toString() in DIGITS) {
+            res += counter(roman[i].toString() + roman[i + 1].toString(), count)
+            i += 2
+            count -= 2
+        }
+        else {
+            res += counter(roman[i].toString(), count)
+            i++
+            count--
+        }
     }
     return res
 }
 fun main () {
-    println(fromRoman("XIV"))
+    println(fromRoman("XLIX"))
 }
 /**
  * Очень сложная (7 баллов)
