@@ -375,8 +375,8 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     if (sortedCost.size > 3) {
         for (i in 2..sortedCost.size - 1) {
             if (weight[sortedCost[i - 2].first]!! <= capacity && sortedCost[i - 2].second >=
-                (sortedCost[i - 1].second + sortedCost[i].second)
-            ) {
+                (sortedCost[i - 1].second + sortedCost[i].second) &&
+                weight[sortedCost[i - 1].first]!! + weight[sortedCost[i].first]!! <= capacity) {
                 capacity -= weight[sortedCost[i - 2].first]!!
                 res.add(sortedCost[i - 2].first)
             }
