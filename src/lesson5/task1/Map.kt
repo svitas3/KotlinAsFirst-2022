@@ -309,27 +309,7 @@ fun hasAnagrams(words: List<String>): Boolean {
  *          "GoodGnome" to setOf()
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
-    var acquaintances = friends.toMutableMap()
-    for ((name, handshakes) in friends) {
-        for (names in handshakes) {
-            for (i in (acquaintances[names] ?: setOf())) {
-                if (name != i) acquaintances[name] = acquaintances[name]!!.plus(i)
-            }
-        }
-    }
-    for ((name, handshakes) in acquaintances) {
-        for (names in handshakes) {
-            for (i in acquaintances[names]!!) {
-                if (name != i && name in acquaintances) acquaintances[name] = acquaintances[name]!!.plus(i)
-            }
-        }
-    }
-    return acquaintances
-}
-//fun main () {
-//    println(propagateHandshakes())
-//}
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
 /**
  * Сложная (6 баллов)
  *
@@ -353,14 +333,14 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     var b = -1
     var num = number
     for (i in digits) {
-        if (i.value <= num && (num - i.value) in digits.values && num - i.value != i.value) {
+        if (i.value <= num && (num - i.value) in digits.values) {
             num -= i.value
             a = i.key
             break
         }
     }
     for (k in digits) {
-        if (k.value == num) b = k.key
+        if (k.value == num && k.key != a) b = k.key
     }
     if (a == -1 || b == -1) return Pair(-1, -1) else return a to b
 }
@@ -386,17 +366,26 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val cost = treasures.toList().sortedByDescending { (k, v) -> v.second }.map { it.first to it.second.second }.toMap()
+    val cost = treasures.toList().sortedByDescending { (k, v) -> v.second }.map { it.first to it.second.second }
     val weight = treasures.toList().sortedByDescending { (k, v) -> v.second }.map { it.first to it.second.first }.toMap()
-    val sortedCost = cost.toList().sortedWith(compareBy ({ weight[it.first] }, { it.second })).sortedByDescending { (k, v) -> v }.toMap()
-    var count = 0
+    val sortedCost = cost.sortedWith(compareBy ({ weight[it.first] }, { it.second })).sortedByDescending { (k, v) -> v }
+    println(sortedCost)
     var capacity = capacity
     var res = mutableSetOf<String>()
-    for (i in sortedCost) {
-        if (i.value >= count && weight[i.key]!! <= capacity) {
-            count -= i.value
-            capacity -= weight[i.key]!!
-            res.add(i.key)
+    if (sortedCost.size > 3) {
+        for (i in 2..sortedCost.size - 1) {
+            if (weight[sortedCost[i - 2].first]!! <= capacity && sortedCost[i - 2].second >=
+                (sortedCost[i - 1].second + sortedCost[i].second)
+            ) {
+                capacity -= weight[sortedCost[i - 2].first]!!
+                res.add(sortedCost[i - 2].first)
+            }
+        }
+    }
+    else for (i in 0..sortedCost.size - 1) {
+        if (weight[sortedCost[i].first]!! <= capacity) {
+            capacity -= weight[sortedCost[i].first]!!
+            res.add(sortedCost[i].first)
         }
     }
     return res
