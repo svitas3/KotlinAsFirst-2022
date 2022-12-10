@@ -368,15 +368,14 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     val cost = treasures.toList().sortedByDescending { (k, v) -> v.second }.map { it.first to it.second.second }
     val weight = treasures.toList().sortedByDescending { (k, v) -> v.second }.map { it.first to it.second.first }.toMap()
-    println(weight)
     val sortedCost = cost.sortedWith(compareBy ({ weight[it.first] }, { it.second })).sortedByDescending { (k, v) -> v }
     var capacity = capacity
     var res = mutableSetOf<String>()
     if (sortedCost.size > 3) {
         for (i in 2..sortedCost.size - 1) {
-            if (weight[sortedCost[i - 2].first]!! <= capacity && (sortedCost[i - 2].second >=
-                (sortedCost[i - 1].second + sortedCost[i].second) ||
-                weight[sortedCost[i - 1].first]!! + weight[sortedCost[i].first]!! > capacity)) {
+            if (sortedCost[i - 2].second <= (sortedCost[i - 1].second + sortedCost[i].second)
+                && weight[sortedCost[i - 1].first]!! + weight[sortedCost[i].first]!! < capacity) continue
+            else if (weight[sortedCost[i - 2].first]!! <= capacity) {
                 capacity -= weight[sortedCost[i - 2].first]!!
                 res.add(sortedCost[i - 2].first)
             }
