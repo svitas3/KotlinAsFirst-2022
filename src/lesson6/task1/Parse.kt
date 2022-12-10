@@ -209,14 +209,14 @@ fun plusMinus(expression: String): Int {
 fun firstDuplicateIndex(str: String): Int {
     val str1 = str.split(" ").map { it.lowercase() }
     var word = -1
-    for (i in 0..str1.size - 2) {
-        if (str1[i] == str1[i + 1]) {
+    for (i in 1..str1.size - 1) {
+        if (str1[i - 1] == str1[i]) {
             word++
             break
         }
-        word += str1[i].length + 1
+        word += str1[i - 1].length + 1
     }
-    return word
+    if (word + 2 == str.length) return - 1 else return word
 }
 /**
  * Сложная (6 баллов)
