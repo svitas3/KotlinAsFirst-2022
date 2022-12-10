@@ -383,10 +383,10 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         }
     }
     else for (i in 0..sortedCost.size - 1) {
-        if (weight[sortedCost[i].first]!! <= capacity) {
-            capacity -= weight[sortedCost[i].first]!!
-            res.add(sortedCost[i].first)
+            if (weight[sortedCost[i].first]!! <= capacity) {
+                capacity -= weight[sortedCost[i].first]!!
+                res.add(sortedCost[i].first)
+            }
         }
-    }
     return res
 }
