@@ -63,9 +63,15 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Подчёркивание в середине и/или в конце строк значения не имеет.
  */
 fun deleteMarked(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    for (line in File(inputName).readLines()) {
+        if (line.isEmpty() || line[0].toString() != "_") {
+            writer.write(line)
+            writer.newLine()
+        }
+    }
+    writer.close()
 }
-
 /**
  * Средняя (14 баллов)
  *
@@ -75,8 +81,22 @@ fun deleteMarked(inputName: String, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
-
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    val writer = File(inputName).bufferedReader().readLines().joinToString("").lowercase()
+    var res = mutableMapOf<String, Int>()
+    var start = -1
+    for (sub in substrings) {
+        var count = 0
+        var start = writer.indexOf(sub.lowercase()) + 1
+        if (start != 0) count++
+        while (start < writer.length - sub.length + 1) {
+            if (sub.lowercase() in (writer.subSequence(start, start + sub.length)).toString().lowercase()) count++
+            start++
+        }
+        res[sub] = count
+    }
+    return res
+}
 
 /**
  * Средняя (12 баллов)
@@ -144,7 +164,8 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(inputName).bufferedReader().readText()
+
 }
 
 /**

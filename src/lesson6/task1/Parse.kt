@@ -124,17 +124,7 @@ fun dateDigitToStr(digital: String): String {
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String {
-    val symbols = mapOf("-" to "", "(" to "", ")" to "")
-    var number = phone
-    if (!number.matches(Regex("""(\+)?+(\d*|\s|\(+\d+|\)|\-)+"""))) return ""
-    number = Regex("""(\-|\(|\))""").replace(number, "")
-    if (number.matches(Regex("""(\+)?+(\d*|\s)*"""))) {
-        number = number.replace(" ".toRegex(), "")
-        return number
-    }
-    return ""
-}
+fun flattenPhoneNumber(phone: String): String = TODO()
 /**
  * Средняя (5 баллов)
  *
@@ -235,7 +225,7 @@ fun mostExpensive(description: String): String {
     var max = -1.0
     var res = ""
     for (i in 1..list.size - 1 step 2) {
-        if (!list[i - 1].matches(Regex("""([A-я]*)""")) || !list[i].matches(Regex("""\d*+\.+\d"""))) return ""
+        if (!list[i - 1].matches(Regex("""([A-я]*|[A-z]*)""")) || !list[i].matches(Regex("""\d*+\.?+\d"""))) return ""
         if (list[i].toDouble() > max) {
             max = list[i].toDouble()
             res = list[i - 1]
