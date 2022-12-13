@@ -164,8 +164,40 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    val writer = File(inputName).bufferedReader().readText()
-
+    val writer = File(outputName).bufferedWriter()
+    writer.use {
+        var maxLength = 0
+        var maxString = ""
+        for (line in File(inputName).readLines()) {
+            val correctLine = line.trim().replace(Regex("""\s+"""), " ")
+            if (correctLine.length > maxLength) {
+                maxLength = correctLine.length
+                maxString = correctLine
+            }
+        }
+        val file = File(inputName).bufferedReader().forEachLine { line ->
+            val startLine = line.trim().replace(Regex("""\s+"""), " ")
+            if (startLine.isEmpty() || startLine.matches(Regex("""\s*"""))) writer.write(startLine)
+            if (startLine.length != maxLength) {
+                val wordsInLine = startLine.split(" ").toMutableList()
+                if (wordsInLine.size == 1) writer.write(startLine + "\n")
+                else {
+                    val spaces = startLine.filter { it.toString() == " " }.count()
+                    var k = 0
+                    var start = startLine.length
+                    for (i in 0..wordsInLine.size - 1) {
+                        if ((maxLength - start) % spaces != 0) {
+                            wordsInLine[i] += " ".repeat((maxLength - start) / spaces + 2)
+                            start++
+                        }
+                        else wordsInLine[i] += " ".repeat((maxLength - start) / spaces + 1)
+                    }
+                    writer.write(wordsInLine.joinToString("").trim() + "\n")
+                }
+            }
+            if (startLine == maxString) writer.write(startLine + "\n")
+        }
+    }
 }
 
 /**
