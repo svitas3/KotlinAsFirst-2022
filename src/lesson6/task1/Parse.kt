@@ -177,8 +177,7 @@ fun bestHighJump(jumps: String): Int {
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
 fun plusMinus(expression: String): Int {
-    var express = expression
-    if (!express.matches(Regex("""(\d*(\s+(\+|\-)+\s+\d*))*|\d*"""))) throw IllegalArgumentException()
+    if (!expression.matches(Regex("""\d+( [+-] \d+)*"""))) throw IllegalArgumentException()
     val ex = expression.split(" ")
     var res = ex[0].toInt()
     for (i in 1..ex.size - 2) {
@@ -202,11 +201,11 @@ fun firstDuplicateIndex(str: String): Int {
     for (i in 1..str1.size - 1) {
         if (str1[i - 1] == str1[i]) {
             word++
-            break
+            return word
         }
         word += str1[i - 1].length + 1
     }
-    if (word + 2 == str.length) return - 1 else return word
+    return word
 }
 /**
  * Сложная (6 баллов)
