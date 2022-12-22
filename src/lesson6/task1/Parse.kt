@@ -224,7 +224,7 @@ fun mostExpensive(description: String): String {
     var max = -1.0
     var res = ""
     for (i in 1..list.size - 1 step 2) {
-        if (!list[i - 1].matches(Regex("""([A-я]*|[A-z]*)""")) || !list[i].matches(Regex("""\d*+(\.+\d*)?"""))) return ""
+        if (!list[i - 1].matches(Regex("""(.*)""")) || !list[i].matches(Regex("""\d*+(\.+\d*)?"""))) return ""
         if (list[i].toDouble() > max) {
             max = list[i].toDouble()
             res = list[i - 1]
