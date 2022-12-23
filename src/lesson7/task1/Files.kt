@@ -177,6 +177,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
         }
         val file = File(inputName).bufferedReader().forEachLine { line ->
             val startLine = line.trim().replace(Regex("""\s+"""), " ")
+            if (startLine.isEmpty()) writer.write(startLine)
             if (startLine.length != maxLength) {
                 val wordsInLine = startLine.split(" ").toMutableList()
                 if (wordsInLine.size == 1) writer.write(startLine + "\n")
