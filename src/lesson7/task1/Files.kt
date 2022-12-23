@@ -177,7 +177,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
         }
         val file = File(inputName).bufferedReader().forEachLine { line ->
             val startLine = line.trim().replace(Regex("""\s+"""), " ")
-            if (startLine.isEmpty()) writer.write(startLine)
+            if (startLine.isEmpty() || startLine.matches(Regex("""\s*"""))) writer.write(startLine)
             if (startLine.length != maxLength) {
                 val wordsInLine = startLine.split(" ").toMutableList()
                 if (wordsInLine.size == 1) writer.write(startLine + "\n")
@@ -260,7 +260,6 @@ fun top20Words(inputName: String): Map<String, Int> = TODO()
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
     TODO()
 }
-
 /**
  * Средняя (12 баллов)
  *
