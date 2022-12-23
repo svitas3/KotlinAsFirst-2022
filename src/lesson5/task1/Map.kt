@@ -266,7 +266,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> = (list.groupingBy { it
 fun hasAnagrams(words: List<String>): Boolean {
     var sortedwords = mutableListOf<String>()
     for (i in words) {
-        sortedwords.add(i.toCharArray().apply { sort() }.joinToString(""))
+        sortedwords.add(i.toCharArray().sorted().joinToString(""))
     }
     val sortedwords1 = sortedwords.sorted()
     for (i in 1..sortedwords1.size - 1) {
@@ -328,17 +328,23 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     val digits = list.mapIndexed { index: Int, num: Int -> index to num }.toMap()
-    println(digits)
     var a = -1
     var b = -1
     var number = number
-    for ((index, num) in digits) {
-        if (num <= number && (number - num) in digits.values) {
-            number -= num
-            a = index
+    for (i in 0..digits.size - 1) {
+        if (digits[i]!! <= number && (number - digits[i]!!) in digits.values) {
+            number -= digits[i]!!
+            a = i
             break
         }
     }
+//    for ((index, num) in digits) {
+//        if (num <= number && (number - num) in digits.values) {
+//            number -= num
+//            a = index
+//            break
+//        }
+//    }
     for ((index, num) in digits) {
         if (num == number && index != a) b = index
     }
