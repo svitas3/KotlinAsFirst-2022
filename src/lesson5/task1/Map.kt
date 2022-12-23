@@ -338,13 +338,6 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
             break
         }
     }
-//    for ((index, num) in digits) {
-//        if (num <= number && (number - num) in digits.values) {
-//            number -= num
-//            a = index
-//            break
-//        }
-//    }
     for ((index, num) in digits) {
         if (num == number && index != a) b = index
     }
